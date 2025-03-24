@@ -1,9 +1,11 @@
 import { SafeAreaView, Text, Button } from "react-native";
 import { router } from 'expo-router';
 import { useMyDaily } from '@/providers/MyDailyProvider';
+import { useState } from 'react';
 
 export default function HomeScreen() {
 	const {call}= useMyDaily();
+	const [inCall, setInCall] = useState(false)
 
 	return (
 		<SafeAreaView>
@@ -15,16 +17,19 @@ export default function HomeScreen() {
 						url: 'https://ruslanaliyev.daily.co/ruslanaliyev_room1', 
 						startVideoOff: true, 
 					})
-						.then(() => {console.log('JOINED')})
+						.then(() => {setInCall(true)})
 						.catch((error) => {console.log({error})});
 				}}
+				disabled={inCall}
 				title="Call"
 			/>
 			<Button
 				onPress={async () => {
 					await call.leave();
-					call.destroy();
+					setInCall(false);
+					// call.destroy(); // This is better done when leaving this page
 				}}
+				disabled={!inCall}
 				title="Hangup"
 			/>
 
